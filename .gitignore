@@ -1,0 +1,82 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Dependencies
+node_modules/
+mcp-server/node_modules/
+
+# Build outputs
+dist/
+dist-ssr/
+*.local
+target/
+src-tauri/target/
+
+# MCP server build
+mcp-server/dist/
+
+# Chrome for Testing (large binary, user-downloaded)
+chrome-for-testing/
+chrome-for-testing*/
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OS files
+Thumbs.db
+Desktop.ini
+
+# Temporary files
+*.tmp
+*.temp
+~$*
+
+# Python (unrelated to project)
+*.py
+__pycache__/
+*.pyc
+
+# Media files (download artifacts)
+*.mp4
+*.ytdl
+*.ytdl.part
+*.mp4.ytdl
+
+# PowerShell scripts (no longer used)
+*.ps1
+
+# Old/deprecated files
+fix-webview2.ps1
+transcribe.py
+get_transcript.py
+
+# Rust build artifacts
+**/Cargo.lock
+**/target/
+*.pdb
+*.ilk
+*.obj
+*.exe
+*.dll
+*.manifest
+
+# Logs
+src-tauri/target/
+
+# IDE
+.vscode/
+.idea/

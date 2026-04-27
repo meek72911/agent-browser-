@@ -1,0 +1,193 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600&display=swap');
+
+* {
+  scrollbar-width: none;
+}
+
+*::-webkit-scrollbar {
+  display: none;
+}
+
+.tab-item:hover .tab-close {
+  opacity: 1;
+}
+
+.nav-btn {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 2px;
+  color: rgba(255, 255, 255, 0.7);
+  flex-shrink: 0;
+  transition: background-color 120ms, color 120ms;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  padding: 0;
+}
+
+.nav-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.settings-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #333 transparent;
+}
+
+.settings-scroll::-webkit-scrollbar {
+  width: 6px;
+  display: block;
+}
+
+.settings-scroll::-webkit-scrollbar-thumb {
+  background: #333;
+  border-radius: 3px;
+}
+
+.newtab-scroll::-webkit-scrollbar {
+  width: 8px;
+}
+.newtab-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.newtab-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+.newtab-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.new-tab-bg {
+  background-image: url('/background.png');
+  background-size: cover;
+  background-position: center;
+}
+
+.pencil-glass-card {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(80px);
+  -webkit-backdrop-filter: blur(80px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: -8px 16px 32px rgba(0, 0, 0, 0.1);
+  border-radius: 28px;
+}
+
+.pencil-glass-search {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(60px);
+  -webkit-backdrop-filter: blur(60px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: -12px 20px 32px rgba(0, 0, 0, 0.1);
+  border-radius: 32px;
+}
+
+.pencil-glass-pill {
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(32px);
+  -webkit-backdrop-filter: blur(32px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 24px;
+}
+
+.pencil-glass-sidebar {
+  background: rgba(42, 26, 24, 0.85);
+  border: 1px solid rgba(93, 64, 55, 0.5);
+  box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.1);
+  border-radius: 24px;
+}
+
+.pencil-glass-chrome {
+  background: rgba(30, 18, 16, 0.94);
+  border-bottom: 1px solid rgba(93, 64, 55, 0.3);
+}
+
+.linen-widget {
+  background: #D0C2B4;
+  box-shadow: inset 0px 2px 4px rgba(255, 255, 255, 0.6),
+              inset 0px -4px 8px rgba(106, 92, 80, 0.7),
+              0px 12px 24px rgba(0, 0, 0, 0.2);
+  border-radius: 28px;
+}
+
+.widget-screen {
+  background: #1A130D;
+  box-shadow: inset 0px 4px 8px rgba(0, 0, 0, 0.9),
+              inset 0px -1px 1px rgba(255, 255, 255, 0.2);
+  border-radius: 22px;
+  border: 1px solid #0A0603;
+}
+
+.text-amber-glow {
+  color: #F59E0B;
+  text-shadow: 0 0 4px rgba(245, 158, 11, 0.4);
+}
+
+.island-container {
+  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+.cursor-blink {
+  animation: blink 1s step-end infinite;
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+@keyframes toast-in {
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes toast-out {
+  from { opacity: 1; }
+  to { opacity: 0; transform: translateX(20px); }
+}
+
+.toast-enter {
+  animation: toast-in 200ms ease-out forwards;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+.slide-up {
+  animation: slideUp 200ms ease-out forwards;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin {
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+  animation: fadeIn 300ms ease-out forwards;
+}
+
+@keyframes pulse-subtle {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.animate-pulse-subtle {
+  animation: pulse-subtle 2s ease-in-out infinite;
+}

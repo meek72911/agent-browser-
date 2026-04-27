@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+  background-color: transparent;
+  color: #e8e8e8;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+#root {
+  height: 100%;
+}
+
+/* Hide scrollbars in the chrome webview */
+::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+/* URL bar monospace font */
+.font-mono {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+}

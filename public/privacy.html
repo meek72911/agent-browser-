@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Privacy Policy — VibeStudio</title>
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; background: #0d0d0d; color: #e8e8e8; max-width: 720px; margin: 0 auto; padding: 40px 20px; line-height: 1.7; }
+    h1 { font-size: 24px; margin-bottom: 8px; }
+    h2 { font-size: 16px; margin-top: 32px; color: #3b82f6; }
+    p { font-size: 14px; color: #aaa; }
+    .date { font-size: 12px; color: #666; margin-bottom: 32px; }
+    ul { padding-left: 20px; }
+    li { font-size: 14px; color: #aaa; margin-bottom: 8px; }
+    a { color: #3b82f6; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <h1>Privacy Policy</h1>
+  <p class="date">Last updated: April 2026</p>
+
+  <h2>Overview</h2>
+  <p>VibeStudio is designed with privacy as a core principle. We collect minimal data and all browsing activity stays local on your machine.</p>
+
+  <h2>Data We Do NOT Collect</h2>
+  <ul>
+    <li>We do not collect browsing history</li>
+    <li>We do not collect page content or extracted markdown</li>
+    <li>We do not track which websites you visit</li>
+    <li>We do not collect personal information without consent</li>
+    <li>We do not send any telemetry data by default</li>
+  </ul>
+
+  <h2>License Key Validation</h2>
+  <p>When you enter a license key, we send only a SHA-256 hash of the key to our validation server. The plaintext key is never transmitted or stored on our servers. Validation requests include only the key hash and your plan type.</p>
+
+  <h2>Local Data Storage</h2>
+  <p>All browsing data, settings, download history, and recent sites are stored locally on your device using the browser's localStorage. This data never leaves your machine. You can clear all local data from Settings &gt; Privacy &gt; Clear Browsing Data.</p>
+
+  <h2>Research Extractions</h2>
+  <p>When VibeStudio extracts page content for MCP (Model Context Protocol) operations, all processing happens locally. Extracted markdown is passed directly to the requesting IDE via local WebSocket connection. We never store or transmit extracted content to our servers.</p>
+
+  <h2>Network Requests</h2>
+  <p>VibeStudio makes the following external requests:</p>
+  <ul>
+    <li>Website navigation (user-initiated)</li>
+    <li>Favicon loading via Google's favicon service</li>
+    <li>License key validation (hash only, on activation)</li>
+    <li>Update checks (version number comparison only)</li>
+  </ul>
+
+  <h2>Ad and Tracker Blocking</h2>
+  <p>VibeStudio blocks ads and trackers by default using locally-stored blocklists. No data about blocked requests is sent externally.</p>
+
+  <h2>Contact</h2>
+  <p>For privacy inquiries, contact: <a href="mailto:privacy@vibestudio.dev">privacy@vibestudio.dev</a></p>
+</body>
+</html>
