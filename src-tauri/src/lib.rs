@@ -261,7 +261,7 @@ pub fn run() {
     std::env::set_var("WEBVIEW2_USER_DATA_FOLDER",
         std::env::temp_dir().join("vibestudio_webview").to_str().unwrap_or("C:\\temp"));
 
-    tauri::Builder::default()
+    let builder = tauri::Builder::default()
         .plugin(
             tauri_plugin_log::Builder::default()
                 .level(log::LevelFilter::Info)
@@ -291,17 +291,19 @@ pub fn run() {
         ])
         .setup(|app| {
             let handle = app.handle().clone();
-            let window = app.get_window("main").unwrap();
-            window.set_title("VibeStudio").ok();
-            window.set_min_size(Some(tauri::PhysicalSize::new(640, 400))).ok();
+            let window_opt = app.get_window("main");
+            if let Some(window) = &window_opt {
+                window.set_title("VibeStudio").ok();
+                window.set_min_size(Some(tauri::PhysicalSize::new(640, 400))).ok();
 
-            // Main webview — Solid.js browser UI
-            let _browser_ui = window.add_child(
-                WebviewBuilder::new("browser-ui", WebviewUrl::App(Default::default()))
-                    .background_color(Color(0, 0, 0, 0)),
-                LogicalPosition::new(0.0, 0.0),
-                LogicalSize::new(1280.0, 800.0),
-            )?;
+                // Main webview — Solid.js browser UI
+                let _browser_ui = window.add_child(
+                    WebviewBuilder::new("browser-ui", WebviewUrl::App(Default::default()))
+                        .background_color(Color(0, 0, 0, 0)),
+                    LogicalPosition::new(0.0, 0.0),
+                    LogicalSize::new(1280.0, 800.0),
+                )?;
+            }
 
             // Initialize TabManager with tokio::sync::Mutex
             let tab_state: TabManagerState = Arc::new(tokio::sync::Mutex::new(tab_manager::TabManager::new()));
@@ -415,13 +417,14 @@ pub fn run() {
             });
 
             // Window event handler — resize + session save on close
-            let ev_handle = handle.clone();
-            let ev_state = tab_state.clone();
-            let ev_window = window.clone();
-            window.on_window_event(move |event| {
-                match event {
-                    tauri::WindowEvent::Resized(size) => {
-                        let scale = ev_window.scale_factor().unwrap_or(1.0);
+            if let Some(window) = window_opt {
+                let ev_handle = handle.clone();
+                let ev_state = tab_state.clone();
+                let ev_window = window.clone();
+                window.on_window_event(move |event| {
+                    match event {
+                        tauri::WindowEvent::Resized(size) => {
+                            let scale = ev_window.scale_factor().unwrap_or(1.0);
                         let lw = size.width as f64 / scale;
                         let lh = size.height as f64 / scale;
                         if let Some(ui) = ev_handle.get_webview("browser-ui") {
@@ -440,22 +443,25 @@ pub fn run() {
                             let data = guard.session_data();
                             if !data.is_empty() {
                                 let session_file = std::env::temp_dir().join("vibestudio_session.json");
-                                if let Ok(json) = serde_json::to_string_pretty(&data) {
-                                    let _ = std::fs::write(&session_file, json);
-                                    log::info!("Session auto-saved on close");
+                                    if let Ok(json) = serde_json::to_string_pretty(&data) {
+                                        let _ = std::fs::write(&session_file, json);
+                                        log::info!("Session auto-saved on close");
+                                    }
                                 }
-                            }
-                        });
+                            });
+                        }
+                        _ => {}
                     }
-                    _ => {}
-                }
-            });
+                });
+            }
 
             log::info!("VibeStudio started — native multi-webview mode");
             Ok(())
-        })
-        .run(tauri::generate_context!())
-        .expect("error while running tauri application");
+        });
+
+    if let Err(e) = builder.run(tauri::generate_context!()) {
+        log::error!("Error while running tauri application: {}", e);
+    }
 }
 
 // ─── Minimal HTTP API for direct testing ───

@@ -368,12 +368,13 @@ impl TabManager {
                 self.switch_tab(next)?;
                 self.tabs_visible = visible_before; // restore overlay state
                 let entry = self.info.get(next);
+                let empty_str = "".to_string();
                 let _ = app.emit(
                     "tab-activated",
                     serde_json::json!({
                         "tab_id": next,
-                        "url": entry.map(|e| &e.url).unwrap_or(&"".to_string()),
-                        "title": entry.map(|e| &e.title).unwrap_or(&"".to_string()),
+                        "url": entry.map(|e| &e.url).unwrap_or(&empty_str),
+                        "title": entry.map(|e| &e.title).unwrap_or(&empty_str),
                     }),
                 );
             }
@@ -507,10 +508,12 @@ impl TabManager {
             .iter()
             .map(|id| {
                 let entry = self.info.get(id);
+                let empty_str = "".to_string();
+                let new_tab_str = "New Tab".to_string();
                 serde_json::json!({
                     "id": id,
-                    "url": entry.map(|e| &e.url).unwrap_or(&"".to_string()),
-                    "title": entry.map(|e| &e.title).unwrap_or(&"New Tab".to_string()),
+                    "url": entry.map(|e| &e.url).unwrap_or(&empty_str),
+                    "title": entry.map(|e| &e.title).unwrap_or(&new_tab_str),
                     "active": self.active_id.as_deref() == Some(id),
                 })
             })
