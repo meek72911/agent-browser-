@@ -294,9 +294,10 @@ impl McpServer {
                 req_id
             )
         } else {
+            let safe_selector = serde_json::to_string(selector).unwrap_or_else(|_| "\"\"".to_string());
             format!(
-                "var el=document.querySelector('{}');var text=el?(el.innerText||el.textContent||''):'';window.__TAURI__.event.emit('mcp-tool-result',{{id:'{}',result:text.substring(0,10000)}});",
-                selector.replace('\\', "\\\\").replace('\'', "\\'"),
+                "var el=document.querySelector({});var text=el?(el.innerText||el.textContent||''):'';window.__TAURI__.event.emit('mcp-tool-result',{{id:'{}',result:text.substring(0,10000)}});",
+                safe_selector,
                 req_id
             )
         };
@@ -326,9 +327,10 @@ impl McpServer {
             .ok_or("Missing selector argument")?;
 
         let req_id = next_req_id();
+        let safe_selector = serde_json::to_string(selector).unwrap_or_else(|_| "\"\"".to_string());
         let js = format!(
-            "var el=document.querySelector('{}');if(el){{el.click();window.__TAURI__.event.emit('mcp-tool-result',{{id:'{}',result:'Clicked '+el.tagName}});}}else{{window.__TAURI__.event.emit('mcp-tool-result',{{id:'{}',result:'Element not found'}});}}",
-            selector.replace('\\', "\\\\").replace('\'', "\\'"),
+            "var el=document.querySelector({});if(el){{el.click();window.__TAURI__.event.emit('mcp-tool-result',{{id:'{}',result:'Clicked '+el.tagName}});}}else{{window.__TAURI__.event.emit('mcp-tool-result',{{id:'{}',result:'Element not found'}});}}",
+            safe_selector,
             req_id,
             req_id
         );
@@ -448,6 +450,11 @@ impl McpServer {
             .collect();
 
         if result_urls.is_empty() {
+            // Restore visibility state
+            if !was_visible {
+                let mut guard = self.state.lock().await;
+                guard.hide_active();
+            }
             return Ok(format!("No search results found for '{}'", query));
         }
 
@@ -466,10 +473,11 @@ impl McpServer {
             // Wait for content with retry instead of hardcoded sleep
             if let Some(c) = self.wait_for_content(4000, 200).await {
                 let snippet = c.text.lines().take(5).collect::<Vec<_>>().join("\n");
+                let untitled_str = "Untitled".to_string();
                 findings.push(format!(
                     "## Source {}: {}\n**URL:** {}\n**Headings:** {}\n\n{}",
                     i + 1,
-                    c.headings.first().unwrap_or(&"Untitled".to_string()),
+                    c.headings.first().unwrap_or(&untitled_str),
                     url,
                     c.headings.join(", "),
                     snippet.chars().take(800).collect::<String>()
@@ -477,7 +485,7 @@ impl McpServer {
             }
         }
 
-        // Restore visibility state
+        // Restore visibility state for success path
         if !was_visible {
             let mut guard = self.state.lock().await;
             guard.hide_active();
@@ -508,9 +516,10 @@ impl McpServer {
                     .chars().take(200).collect::<String>()
             };
             let word_count = content.text.split_whitespace().count();
+            let untitled_str = "Untitled".to_string();
             return Ok(format!(
                 "## Extracted Article\n\n**Title:** {}\n**URL:** {}\n**Meta:** {}\n**Words:** ~{}\n\n---\n\n{}\n\n---\n\n**Links found:** {}",
-                content.headings.first().unwrap_or(&"Untitled".to_string()),
+                content.headings.first().unwrap_or(&untitled_str),
                 guard.tab_info(&id).map(|i| i.url.clone()).unwrap_or_default(),
                 excerpt,
                 word_count,
@@ -557,39 +566,18 @@ impl McpServer {
     }
 
     async fn tool_screenshot(&self) -> Result<String, String> {
-        let req_id = next_req_id();
-        let js = format!(
-            "(function(){{var c=document.createElement('canvas');c.width=window.innerWidth;c.height=window.innerHeight;var ctx=c.getContext('2d');ctx.drawWindow(document.defaultView,0,0,c.width,c.height,'rgb(0,0,0)');var d=c.toDataURL('image/png');window.__TAURI__.event.emit('mcp-tool-result',{{id:'{}',result:d}});}})();",
-            req_id
-        );
-
-        let guard = self.state.lock().await;
-        let id = guard.active_id().ok_or("No active tab")?.to_string();
-        let (tx, rx) = oneshot::channel();
-        self.pending.lock().await.insert(req_id.clone(), tx);
-        guard.eval(&id, &js).map_err(|e| e.to_string())?;
-        drop(guard);
-
-        match tokio::time::timeout(Duration::from_secs(10), rx).await {
-            Ok(Ok(data_url)) => {
-                // data_url is "data:image/png;base64,..."
-                Ok(format!(
-                    "Screenshot captured ({} chars, PNG format)",
-                    data_url.len()
-                ))
-            }
-            Ok(Err(_)) => Err("Channel closed".into()),
-            Err(_) => {
-                self.pending.lock().await.remove(&req_id);
-                Err("Screenshot timed out — WebView2 may not support drawWindow".into())
-            }
-        }
+        // WebView2 does not support `drawWindow`, and injecting a remote script for `html2canvas`
+        // into active browser sessions is a major security risk, especially on secure sites with CSP.
+        // Until Tauri provides a native screenshot API or we bundle a safe, localized capture method,
+        // we must return an error rather than silently failing or violating security boundaries.
+        Err("Screenshot tool is not currently supported natively in WebView2. Awaiting backend implementation.".into())
     }
 }
 
 // ─── JSON-RPC helpers ───
 
 #[derive(Deserialize, Debug)]
+#[allow(dead_code)]
 struct JsonRpcRequest {
     jsonrpc: String,
     method: String,
